@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { catchError, delay, EMPTY, finalize, Observable, of, tap } from 'rxjs';
 import { AppointmentService } from '../service/appointment.service';
 import { AsyncPipe, DatePipe } from '@angular/common';
+import { PaginatedAppointments } from '../models/appointment.model';
 
 @Component({
   selector: 'app-appointments-list',
@@ -12,7 +13,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   styleUrl: './appointments-list.component.css',
 })
 export class AppointmentsListComponent implements OnInit {
-  appointments$!: Observable<any>;
+  appointments$!: Observable<PaginatedAppointments>;
   error$!: Observable<{ error: string } | null>; // To handle and store error messages
   fetchingData: boolean = true;
 
