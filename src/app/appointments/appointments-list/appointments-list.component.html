@@ -5,22 +5,22 @@
     <thead>
       <tr>
         <th>Id</th>
-        <th>Tipo Documento</th>
-        <th>Número Documento</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>DNI</th>
         <th>Especialidad</th>
-        <th>Fecha Registrada</th>
-        <th>Hora Registrada</th>
+        <!-- <th>Hora Registrada</th> -->
       </tr>
     </thead>
     <tbody>
-      @for (appointment of listAppointments; track appointment.id) {
+      @for (appointment of listAppointments.data; track appointment.id) {
       <tr>
         <td>{{ appointment.id }}</td>
-        <td>{{ appointment.tipoDocumento }}</td>
-        <td>{{ appointment.numDocumento }}</td>
-        <td>{{ appointment.nombreCompleto }}</td>
-        <td>{{ appointment.especialidad }}</td>
-        <td>{{ appointment.fechaHora | date : "dd/MM/YY HH:mm" }}</td>
+        <td>{{ appointment.firstName }}</td>
+        <td>{{ appointment.lastName }}</td>
+        <td>{{ appointment.dni }}</td>
+        <td>{{ appointment.specialtyName }}</td>
+        <!-- <td>{{ appointment.fechaHora | date : "dd/MM/YY HH:mm" }}</td> -->
       </tr>
       }
     </tbody>
