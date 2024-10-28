@@ -1,3 +1,8 @@
+.title-section {
+  text-align: center;
+  margin: 20px 0;
+}
+
 .table-container {
   display: flex;
   justify-content: center;
