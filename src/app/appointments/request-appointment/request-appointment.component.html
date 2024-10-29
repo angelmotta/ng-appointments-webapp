@@ -1,1 +1,25 @@
-<p>request-appointment works!</p>
+<h1>Crear cita</h1>
+<form [formGroup]="requestAppointmentForm" (ngSubmit)="handleSubmit()">
+  <div>
+    <label for="firstName">Nombre</label>
+    <input id="firstName" type="text" formControlName="firstName" />
+  </div>
+  <div>
+    <label for="lastName">Apellido</label>
+    <input id="lastName" formControlName="lastName" />
+  </div>
+  <div>
+    <label for="dni">DNI</label>
+    <input id="dni" type="text" formControlName="dni" />
+  </div>
+  <div>
+    <label for="specialty">Especialidad</label>
+    <select id="specialty" formControlName="specialtyId">
+      <option value="1">General</option>
+      <option value="2">Odontología</option>
+      <option value="3">Pediatría</option>
+      <option value="4">Psicología</option>
+    </select>
+  </div>
+  <button type="submit">Crear</button>
+</form>
