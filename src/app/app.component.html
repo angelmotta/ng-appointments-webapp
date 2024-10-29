@@ -1,15 +1,13 @@
 <header>
   <nav>
-    <a href="/" class="brand">Bienestar App</a>
+    <a routerLink="/" class="brand">Bienestar App</a>
     <button class="menu-button" aria-label="Toggle menu">☰</button>
     <ul class="nav-list">
-      <li><a href="/cita">Crear Cita</a></li>
+      <li><a routerLink="/cita">Crear Cita</a></li>
     </ul>
   </nav>
 </header>
 
 <main class="main">
-  <app-appointments-list />
+  <router-outlet />
 </main>
-
-<router-outlet />
