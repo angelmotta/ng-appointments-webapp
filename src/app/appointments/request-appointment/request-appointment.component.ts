@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AppointmentRequest } from '../models/appointment.model';
+import { AppointmentService } from '../service/appointment.service';
 
 @Component({
   selector: 'app-request-appointment',
@@ -16,6 +17,8 @@ import { AppointmentRequest } from '../models/appointment.model';
   styleUrl: './request-appointment.component.css',
 })
 export class RequestAppointmentComponent {
+  constructor(private appointmentService: AppointmentService) {}
+
   requestAppointmentForm = new FormGroup({
     firstName: new FormControl('', Validators.required),
     lastName: new FormControl('', Validators.required),
@@ -62,8 +65,20 @@ export class RequestAppointmentComponent {
     }
     const requestAppointment = this.getFormPayload();
 
-    // TODO: send data to the server
-    // If data was sent reset the form
-    this.requestAppointmentForm.reset();
+    // Send Request to API
+    this.appointmentService.createAppointment(requestAppointment).subscribe({
+      next: () => {
+        console.log(`Appointment created successfully`);
+        this.requestAppointmentForm.reset(); // clear form upon successful submission
+        // TODO: show success Dialog
+        alert(`Cita creada exitosamente =)`);
+      },
+      error: (error: Error) => {
+        console.log(`Something went wrong: error creating Appointment`);
+        console.error(error.message);
+        // TODO: show error Dialog
+        alert(`Error al crear Cita =(`);
+      },
+    });
   }
 }
