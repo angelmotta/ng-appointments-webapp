@@ -13,3 +13,10 @@ export interface PaginatedAppointments {
   totalPages: number;
   totalItems: number;
 }
+
+export interface AppointmentRequest {
+  firstName: string;
+  lastName: string;
+  dni: string;
+  specialtyId: number;
+}
