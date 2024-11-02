@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -8,6 +8,9 @@ import {
 } from '@angular/forms';
 import { AppointmentRequest } from '../models/appointment.model';
 import { AppointmentService } from '../service/appointment.service';
+import { SpecialtyService } from '../service/specialty.service';
+import { finalize, tap } from 'rxjs';
+import { Specialty } from '../models/specialty.model';
 
 @Component({
   selector: 'app-request-appointment',
@@ -16,8 +19,40 @@ import { AppointmentService } from '../service/appointment.service';
   templateUrl: './request-appointment.component.html',
   styleUrl: './request-appointment.component.css',
 })
-export class RequestAppointmentComponent {
-  constructor(private appointmentService: AppointmentService) {}
+export class RequestAppointmentComponent implements OnInit {
+  listSpecialties: Specialty[] = [];
+  fetchingData: boolean = true;
+  hasError: boolean = false;
+  errorMessage: string = '';
+
+  constructor(
+    private appointmentService: AppointmentService,
+    private specialtyService: SpecialtyService
+  ) {}
+
+  ngOnInit(): void {
+    this.specialtyService
+      .getSpecialties()
+      .pipe(
+        tap((data) => console.log(`Fetched specialties: ${data}`)),
+        finalize(() => {
+          this.fetchingData = false;
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.listSpecialties = data;
+          console.log(`data received: ${data}`);
+        },
+        error: (e) => {
+          console.error(e);
+          this.hasError = true;
+        },
+        complete: () => {
+          console.info(`completed call`);
+        },
+      });
+  }
 
   requestAppointmentForm = new FormGroup({
     firstName: new FormControl('', Validators.required),
@@ -77,7 +112,7 @@ export class RequestAppointmentComponent {
         console.log(`Something went wrong: error creating Appointment`);
         console.error(error.message);
         // TODO: show error Dialog
-        alert(`Error al crear Cita =(`);
+        alert(`Error al crear Cita =(\n${error.message}`);
       },
     });
   }
