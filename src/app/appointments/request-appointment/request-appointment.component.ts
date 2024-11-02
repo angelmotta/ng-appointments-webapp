@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -24,11 +25,43 @@ export class RequestAppointmentComponent implements OnInit {
   fetchingData: boolean = true;
   hasError: boolean = false;
   errorMessage: string = '';
+  requestAppointmentForm: FormGroup<{
+    firstName: FormControl<string>;
+    lastName: FormControl<string>;
+    dni: FormControl<string>;
+    specialtyId: FormControl<number>;
+  }>;
 
   constructor(
     private appointmentService: AppointmentService,
-    private specialtyService: SpecialtyService
-  ) {}
+    private specialtyService: SpecialtyService,
+    private fb: FormBuilder
+  ) {
+    // Initialize the form with FormBuilder
+    this.requestAppointmentForm = this.fb.group({
+      firstName: this.fb.control('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      lastName: this.fb.control('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      dni: this.fb.control('', {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.maxLength(8),
+          Validators.pattern(/^\d+$/), // Only allows digits
+        ],
+      }),
+      specialtyId: this.fb.control(0, {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+    });
+  }
 
   ngOnInit(): void {
     this.specialtyService
@@ -42,7 +75,8 @@ export class RequestAppointmentComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.listSpecialties = data;
-          console.log(`data received: ${data}`);
+          console.log(`data received:`);
+          console.log(data);
         },
         error: (e) => {
           console.error(e);
@@ -54,17 +88,29 @@ export class RequestAppointmentComponent implements OnInit {
       });
   }
 
-  requestAppointmentForm = new FormGroup({
-    firstName: new FormControl('', Validators.required),
-    lastName: new FormControl('', Validators.required),
-    dni: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8),
-      Validators.maxLength(8),
-      Validators.pattern(/^\d+$/), // Only allows digits
-    ]),
-    specialtyId: new FormControl('', Validators.required),
-  });
+  // requestAppointmentForm = new FormGroup({
+  //   firstName: new FormControl('', {
+  //     nonNullable: true,
+  //     validators: Validators.required,
+  //   }),
+  //   lastName: new FormControl('', {
+  //     nonNullable: true,
+  //     validators: Validators.required,
+  //   }),
+  //   dni: new FormControl('', {
+  //     nonNullable: true,
+  //     validators: [
+  //       Validators.required,
+  //       Validators.minLength(8),
+  //       Validators.maxLength(8),
+  //       Validators.pattern(/^\d+$/), // Only allows digits
+  //     ],
+  //   }),
+  //   specialtyId: new FormControl(0, {
+  //     nonNullable: true,
+  //     validators: Validators.required,
+  //   }),
+  // });
 
   get firstName() {
     return this.requestAppointmentForm.get('firstName');
@@ -82,24 +128,14 @@ export class RequestAppointmentComponent implements OnInit {
     return this.requestAppointmentForm.get('specialtyId');
   }
 
-  private getFormPayload(): AppointmentRequest {
-    const { firstName, lastName, dni, specialtyId } =
-      this.requestAppointmentForm.value;
-    return {
-      firstName: firstName as string,
-      lastName: lastName as string,
-      dni: dni as string,
-      specialtyId: Number(specialtyId),
-    };
-  }
-
   handleSubmit() {
     console.log(this.requestAppointmentForm.value);
     if (!this.requestAppointmentForm.valid) {
       alert('Corregir los campos indicados antes de crear su cita');
     }
-    const requestAppointment = this.getFormPayload();
-
+    // const requestAppointment = this.getFormPayload();
+    const requestAppointment = this.requestAppointmentForm
+      .value as AppointmentRequest;
     // Send Request to API
     this.appointmentService.createAppointment(requestAppointment).subscribe({
       next: () => {

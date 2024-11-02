@@ -32,10 +32,9 @@
   <div>
     <label for="specialty">Especialidad</label>
     <select id="specialty" formControlName="specialtyId">
-      <option value="1">General</option>
-      <option value="2">Odontología</option>
-      <option value="3">Pediatría</option>
-      <option value="4">Psicología</option>
+      @for (specialty of listSpecialties; track specialty.id) {
+      <option [value]="specialty.id">{{ specialty.specialtyName }}</option>
+      }
     </select>
     <div
       *ngIf="
