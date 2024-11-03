@@ -17,6 +17,10 @@
   width: 300px;
   text-align: center;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+
+  /* Positioning adjustments */
+  position: fixed;
+  top: 25vh;
 }
 
 .dialog-box.success {

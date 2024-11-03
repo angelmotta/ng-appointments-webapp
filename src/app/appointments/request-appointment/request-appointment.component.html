@@ -32,6 +32,7 @@
   <div>
     <label for="specialty">Especialidad</label>
     <select id="specialty" formControlName="specialtyId">
+      <option value="" disabled selected>Elegir especialidad</option>
       @for (specialty of listSpecialties; track specialty.id) {
       <option [value]="specialty.id">{{ specialty.specialtyName }}</option>
       }

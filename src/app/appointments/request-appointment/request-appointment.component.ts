@@ -30,7 +30,7 @@ export class RequestAppointmentComponent implements OnInit {
     firstName: FormControl<string>;
     lastName: FormControl<string>;
     dni: FormControl<string>;
-    specialtyId: FormControl<number>;
+    specialtyId: FormControl<number | null>;
   }>;
   // Dialog
   showDialog = false;
@@ -61,8 +61,7 @@ export class RequestAppointmentComponent implements OnInit {
           Validators.pattern(/^\d+$/), // Only allows digits
         ],
       }),
-      specialtyId: this.fb.control(0, {
-        nonNullable: true,
+      specialtyId: this.fb.control<number | null>(null, {
         validators: Validators.required,
       }),
     });
@@ -114,7 +113,7 @@ export class RequestAppointmentComponent implements OnInit {
     if (!this.requestAppointmentForm.valid) {
       alert('Corregir los campos indicados antes de crear su cita');
     }
-    // const requestAppointment = this.getFormPayload();
+
     const requestAppointment = this.requestAppointmentForm
       .value as AppointmentRequest;
     // Send Request to API
@@ -125,8 +124,6 @@ export class RequestAppointmentComponent implements OnInit {
         this.dialogType = 'success';
         this.showDialog = true;
         this.requestAppointmentForm.reset(); // clear form upon successful submission
-        // TODO: show success Dialog
-        // alert(`Cita creada exitosamente =)`);
       },
       error: (error: Error) => {
         console.log(`Something went wrong: error creating Appointment`);
@@ -134,8 +131,6 @@ export class RequestAppointmentComponent implements OnInit {
         this.dialogType = 'error';
         this.showDialog = true;
         console.error(error.message);
-        // TODO: show error Dialog
-        // alert(`Error al crear Cita =(\n${error.message}`);
       },
     });
   }
