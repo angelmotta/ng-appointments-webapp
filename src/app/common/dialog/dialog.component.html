@@ -1,0 +1,6 @@
+<div class="dialog-backdrop" (click)="onClose()">
+  <div class="dialog-box" [ngClass]="type">
+    <p>{{ message }}</p>
+    <button (click)="onClose()">Cerrar</button>
+  </div>
+</div>

@@ -49,3 +49,11 @@
   </button>
   <p>Form status: {{ requestAppointmentForm.status }}</p>
 </form>
+
+<app-dialog
+  *ngIf="showDialog"
+  [message]="dialogMessage"
+  [type]="dialogType"
+  (close)="closeDialog()"
+>
+</app-dialog>

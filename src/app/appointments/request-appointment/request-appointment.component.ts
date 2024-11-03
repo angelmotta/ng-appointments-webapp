@@ -12,11 +12,12 @@ import { AppointmentService } from '../service/appointment.service';
 import { SpecialtyService } from '../service/specialty.service';
 import { finalize, tap } from 'rxjs';
 import { Specialty } from '../models/specialty.model';
+import { DialogComponent } from '../../common/dialog/dialog.component';
 
 @Component({
   selector: 'app-request-appointment',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, DialogComponent],
   templateUrl: './request-appointment.component.html',
   styleUrl: './request-appointment.component.css',
 })
@@ -31,6 +32,10 @@ export class RequestAppointmentComponent implements OnInit {
     dni: FormControl<string>;
     specialtyId: FormControl<number>;
   }>;
+  // Dialog
+  showDialog = false;
+  dialogMessage = '';
+  dialogType: 'success' | 'error' = 'success';
 
   constructor(
     private appointmentService: AppointmentService,
@@ -88,30 +93,6 @@ export class RequestAppointmentComponent implements OnInit {
       });
   }
 
-  // requestAppointmentForm = new FormGroup({
-  //   firstName: new FormControl('', {
-  //     nonNullable: true,
-  //     validators: Validators.required,
-  //   }),
-  //   lastName: new FormControl('', {
-  //     nonNullable: true,
-  //     validators: Validators.required,
-  //   }),
-  //   dni: new FormControl('', {
-  //     nonNullable: true,
-  //     validators: [
-  //       Validators.required,
-  //       Validators.minLength(8),
-  //       Validators.maxLength(8),
-  //       Validators.pattern(/^\d+$/), // Only allows digits
-  //     ],
-  //   }),
-  //   specialtyId: new FormControl(0, {
-  //     nonNullable: true,
-  //     validators: Validators.required,
-  //   }),
-  // });
-
   get firstName() {
     return this.requestAppointmentForm.get('firstName');
   }
@@ -140,16 +121,26 @@ export class RequestAppointmentComponent implements OnInit {
     this.appointmentService.createAppointment(requestAppointment).subscribe({
       next: () => {
         console.log(`Appointment created successfully`);
+        this.dialogMessage = 'Cita creada exitosamente =)';
+        this.dialogType = 'success';
+        this.showDialog = true;
         this.requestAppointmentForm.reset(); // clear form upon successful submission
         // TODO: show success Dialog
-        alert(`Cita creada exitosamente =)`);
+        // alert(`Cita creada exitosamente =)`);
       },
       error: (error: Error) => {
         console.log(`Something went wrong: error creating Appointment`);
+        this.dialogMessage = `Error al crear cita =( \n ${error.message}`;
+        this.dialogType = 'error';
+        this.showDialog = true;
         console.error(error.message);
         // TODO: show error Dialog
-        alert(`Error al crear Cita =(\n${error.message}`);
+        // alert(`Error al crear Cita =(\n${error.message}`);
       },
     });
+  }
+
+  closeDialog() {
+    this.showDialog = false;
   }
 }
