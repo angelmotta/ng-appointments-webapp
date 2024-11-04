@@ -13,6 +13,7 @@ import { SpecialtyService } from '../service/specialty.service';
 import { finalize, tap } from 'rxjs';
 import { Specialty } from '../models/specialty.model';
 import { DialogComponent } from '../../common/dialog/dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-request-appointment',
@@ -40,7 +41,8 @@ export class RequestAppointmentComponent implements OnInit {
   constructor(
     private appointmentService: AppointmentService,
     private specialtyService: SpecialtyService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     // Initialize the form with FormBuilder
     this.requestAppointmentForm = this.fb.group({
@@ -145,5 +147,8 @@ export class RequestAppointmentComponent implements OnInit {
 
   closeDialog() {
     this.showDialog = false;
+    if (this.dialogType === 'success') {
+      this.router.navigate(['/']);
+    }
   }
 }
