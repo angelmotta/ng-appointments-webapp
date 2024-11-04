@@ -111,7 +111,15 @@ export class RequestAppointmentComponent implements OnInit {
   handleSubmit() {
     console.log(this.requestAppointmentForm.value);
     if (!this.requestAppointmentForm.valid) {
-      alert('Corregir los campos indicados antes de crear su cita');
+      this.dialogMessage = 'Corregir los campos indicados';
+      this.dialogType = 'error';
+      this.showDialog = true;
+      // Mark all controls as touched to show validation errors
+      Object.keys(this.requestAppointmentForm.controls).forEach((field) => {
+        const control = this.requestAppointmentForm.get(field);
+        control?.markAsTouched({ onlySelf: true });
+      });
+      return;
     }
 
     const requestAppointment = this.requestAppointmentForm

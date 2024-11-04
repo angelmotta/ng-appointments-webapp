@@ -3,30 +3,37 @@
   <div>
     <label for="firstName">Nombre</label>
     <input id="firstName" type="text" formControlName="firstName" />
-    <div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)">
-      El campo <em>Nombre</em> es requerido.
+    <div class="form-error-message">
+      <small *ngIf="firstName?.touched && firstName?.errors"
+        >El <em>Nombre</em> es requerido.</small
+      >
+      <small class="hidden-placeholder">&nbsp;</small>
     </div>
   </div>
   <div>
     <label for="lastName">Apellido</label>
     <input id="lastName" formControlName="lastName" />
-    <div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)">
-      El campo <em>Apellido</em> es requerido.
+    <div class="form-error-message">
+      <small *ngIf="lastName?.touched && firstName?.errors"
+        >El <em>Apellido</em> es requerido.</small
+      >
+      <small class="hidden-placeholder">&nbsp;</small>
     </div>
   </div>
   <div>
     <label for="dni">DNI</label>
     <input id="dni" type="text" formControlName="dni" />
-    <div *ngIf="dni?.invalid && dni?.touched">
-      <div *ngIf="dni?.hasError('required')">
-        El campo <em>DNI</em> es requerido
-      </div>
-      <div *ngIf="dni?.hasError('minlength') || dni?.hasError('maxlength')">
-        El <em>DNI</em> debe ser 8 dígitos
-      </div>
-      <div *ngIf="dni?.hasError('pattern')">
-        El <em>DNI</em> solo debe contener dígitos.
-      </div>
+    <div class="form-error-message">
+      <small *ngIf="dni?.touched && dni?.hasError('required')"
+        >El <em>DNI</em> es requerido</small
+      >
+      <small *ngIf="dni?.hasError('minlength') || dni?.hasError('maxlength')"
+        >El <em>DNI</em> debe ser 8 dígitos</small
+      >
+      <small *ngIf="dni?.hasError('pattern')"
+        >El <em>DNI</em> solo debe contener dígitos.</small
+      >
+      <small class="hidden-placeholder">&nbsp;</small>
     </div>
   </div>
   <div>
@@ -37,18 +44,13 @@
       <option [value]="specialty.id">{{ specialty.specialtyName }}</option>
       }
     </select>
-    <div
-      *ngIf="
-        specialtyId?.invalid && (specialtyId?.dirty || specialtyId?.touched)
-      "
-    >
-      Elegir una <em>especialidad</em> es requerido.
+    <div class="form-error-message">
+      <small *ngIf="specialtyId?.touched && specialtyId?.errors"
+        >Elegir una <em>especialidad</em>.</small
+      >
     </div>
   </div>
-  <button type="submit" [disabled]="!requestAppointmentForm.valid">
-    Crear
-  </button>
-  <p>Form status: {{ requestAppointmentForm.status }}</p>
+  <button type="submit">Crear</button>
 </form>
 
 <app-dialog
