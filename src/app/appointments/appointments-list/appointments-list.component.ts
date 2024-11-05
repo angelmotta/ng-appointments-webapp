@@ -46,8 +46,6 @@ export class AppointmentsListComponent implements OnInit {
         }
         this.error$ = of({ error: errorMessage });
         return EMPTY; // Return an empty observable to stop further processing
-        // this.error$ = of(err);
-        // return EMPTY; // Return an empty observable to stop further processing
       }),
       finalize(() => {
         this.fetchingData = false; // Stop loading spinner when the observable completes

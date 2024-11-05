@@ -5,6 +5,7 @@ export interface Appointment {
   dni: string;
   specialtyId: number;
   specialtyName: string;
+  createdAt: Date;
 }
 
 export interface PaginatedAppointments {

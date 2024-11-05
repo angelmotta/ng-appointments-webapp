@@ -9,7 +9,7 @@
         <th>Apellido</th>
         <th>DNI</th>
         <th>Especialidad</th>
-        <!-- <th>Hora Registrada</th> -->
+        <th>Registrado</th>
       </tr>
     </thead>
     <tbody>
@@ -20,7 +20,7 @@
         <td>{{ appointment.lastName }}</td>
         <td>{{ appointment.dni }}</td>
         <td>{{ appointment.specialtyName }}</td>
-        <!-- <td>{{ appointment.fechaHora | date : "dd/MM/YY HH:mm" }}</td> -->
+        <td>{{ appointment.createdAt | date : "dd/MM/YY HH:mm" }}</td>
       </tr>
       }
     </tbody>
