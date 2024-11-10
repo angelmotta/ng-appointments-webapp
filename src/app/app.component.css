@@ -1,6 +1,10 @@
-header {
+/* header {
   background-color: #333;
   padding: 1rem;
+} */
+
+.spacer {
+  flex: 1;
 }
 
 nav {
@@ -9,7 +13,8 @@ nav {
 }
 
 .brand {
-  color: white;
+  /* color of the brand rose-red dark */
+  color: #8b0000;
   text-decoration: none;
   font-size: 1.5rem;
 }

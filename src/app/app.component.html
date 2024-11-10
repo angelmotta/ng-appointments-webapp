@@ -1,4 +1,13 @@
 <header>
+  <mat-toolbar>
+    <a routerLink="/" class="brand">Bienestar App</a>
+    <span class="spacer"></span>
+    <button mat-raised-button color="accent" routerLink="/cita">
+      Crear cita
+    </button>
+  </mat-toolbar>
+</header>
+<!-- <header>
   <nav>
     <a routerLink="/" class="brand">Bienestar App</a>
     <button class="menu-button" aria-label="Toggle menu">☰</button>
@@ -6,7 +15,7 @@
       <li><a routerLink="/cita">Crear Cita</a></li>
     </ul>
   </nav>
-</header>
+</header> -->
 
 <main class="main">
   <router-outlet />
