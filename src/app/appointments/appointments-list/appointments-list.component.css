@@ -4,10 +4,14 @@
 }
 
 .table-container {
-  display: flex;
-  justify-content: center;
+  /* display: flex; */
+  /* justify-content: center; */
   padding: 20px;
 }
+
+/* table {
+  margin: 30px;
+} */
 
 .styled-table {
   width: 80%;

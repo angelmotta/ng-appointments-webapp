@@ -21,8 +21,38 @@ export class AppointmentService {
       tap({
         next: () =>
           console.log('HTTP Request executed - this means someone subscribed!'),
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.error('Failed to fetch appointments:', error);
+        console.log(`----`);
+        let errorMessage: string;
+        switch (error.status) {
+          case 401:
+            errorMessage = 'Unauthorized - please log in again';
+            break;
+          case 403:
+            errorMessage = 'You do not have permission to view appointments';
+            break;
+          case 500:
+            errorMessage = 'Appointment Service error - please try again later';
+            break;
+          case 0:
+            errorMessage = 'Appointment Service is not available';
+            break;
+          default:
+            errorMessage = 'Failed to fetch appointments';
+        }
+
+        // We can access the error response body if the API returns detailed errors
+        console.log(error.error);
+        // const errorResponse = error.error as ErrorResponse; // Define ErrorResponse interface
+        // if (errorResponse?.message) {
+        //   errorMessage = errorResponse.message;
+        // }
+
+        console.error(`Appointment fetch failed: ${errorMessage}`);
+        return throwError(() => new Error(errorMessage));
       })
-      // delay(5000) // simulate network delay xx
     );
   }
 

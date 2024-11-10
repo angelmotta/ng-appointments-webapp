@@ -19,9 +19,4 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class AppComponent {
   title = 'appointments-webapp';
-
-  onCreateAppointment() {
-    console.log('Create appointment clicked');
-    // routerLink="/cita"
-  }
 }

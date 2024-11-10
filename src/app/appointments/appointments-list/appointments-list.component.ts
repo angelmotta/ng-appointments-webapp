@@ -4,53 +4,51 @@ import { catchError, delay, EMPTY, finalize, Observable, of, tap } from 'rxjs';
 import { AppointmentService } from '../service/appointment.service';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { PaginatedAppointments } from '../models/appointment.model';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-appointments-list',
   standalone: true,
-  imports: [AsyncPipe, DatePipe],
+  imports: [AsyncPipe, DatePipe, MatTableModule],
   templateUrl: './appointments-list.component.html',
   styleUrl: './appointments-list.component.css',
 })
 export class AppointmentsListComponent implements OnInit {
-  appointments$!: Observable<PaginatedAppointments>;
-  error$!: Observable<{ error: string } | null>; // To handle and store error messages
+  dataSourceAppointments: PaginatedAppointments | null = null;
+  errorMessage: string = '';
   fetchingData: boolean = true;
-
+  displayedColumns: string[] = [
+    'id',
+    'createdAt',
+    'firstName',
+    'lastName',
+    'dni',
+    'specialtyName',
+  ];
   constructor(private appointmentService: AppointmentService) {}
 
   ngOnInit(): void {
     console.log(`ngOnInit Component`);
 
-    this.error$ = of(null);
-
-    this.appointments$ = this.appointmentService.getAppointment().pipe(
-      tap({
-        next: (data) => console.log('Received user:', data),
-        error: (error) => console.error('Error fetching data (tap):', error),
-        complete: () => console.log('Data stream completed'),
-      }),
-      catchError((err) => {
-        console.error('CatchError fetching data:', err);
-        let errorMessage = 'An unknown error occurred';
-        // check status code
-        if (err.status === 401) {
-          errorMessage = 'Unauthorized request. Please login.';
-        } else if (err.status === 404) {
-          errorMessage = 'Resource not found.';
-        } else if (err.status === 500) {
-          errorMessage = 'Server error. Please try again later.';
-        } else if (err.name === 'HttpErrorResponse' && err.status === 0) {
-          errorMessage =
-            'Network error (Appointment Service is not available).';
-        }
-        this.error$ = of({ error: errorMessage });
-        return EMPTY; // Return an empty observable to stop further processing
-      }),
-      finalize(() => {
-        this.fetchingData = false; // Stop loading spinner when the observable completes
-        console.log('Observable completed');
-      })
-    );
+    this.appointmentService
+      .getAppointment()
+      .pipe(
+        finalize(() => {
+          // Runs after success or error (no matter the outcome.)
+          this.fetchingData = false;
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          console.log(`received data from REST API`);
+          console.log(data);
+          this.dataSourceAppointments = data;
+        },
+        error: (e) => {
+          this.errorMessage = e.message || 'Unknown issue';
+        },
+        complete: () =>
+          console.info(`GET /appointments completed successfully`),
+      });
   }
 }

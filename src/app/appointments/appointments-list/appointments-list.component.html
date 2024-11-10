@@ -1,31 +1,39 @@
 <h1 class="title-section">Citas</h1>
-@if (appointments$ | async; as listAppointments) {
-<div class="table-container">
-  <table class="styled-table">
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>DNI</th>
-        <th>Especialidad</th>
-        <th>Registrado</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (appointment of listAppointments.data; track appointment.id) {
-      <tr>
-        <td>{{ appointment.id }}</td>
-        <td>{{ appointment.firstName }}</td>
-        <td>{{ appointment.lastName }}</td>
-        <td>{{ appointment.dni }}</td>
-        <td>{{ appointment.specialtyName }}</td>
-        <td>{{ appointment.createdAt | date : "dd/MM/YY HH:mm" }}</td>
-      </tr>
-      }
-    </tbody>
-  </table>
-</div>
+@if (dataSourceAppointments) {
+<table
+  mat-table
+  [dataSource]="dataSourceAppointments.data"
+  class="mat-elevation-z8"
+>
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id cita</th>
+    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+  </ng-container>
+  <ng-container matColumnDef="firstName">
+    <th mat-header-cell *matHeaderCellDef>Nombre</th>
+    <td mat-cell *matCellDef="let element">{{ element.firstName }}</td>
+  </ng-container>
+  <ng-container matColumnDef="lastName">
+    <th mat-header-cell *matHeaderCellDef>Apellido</th>
+    <td mat-cell *matCellDef="let element">{{ element.lastName }}</td>
+  </ng-container>
+  <ng-container matColumnDef="dni">
+    <th mat-header-cell *matHeaderCellDef>DNI</th>
+    <td mat-cell *matCellDef="let element">{{ element.dni }}</td>
+  </ng-container>
+  <ng-container matColumnDef="specialtyName">
+    <th mat-header-cell *matHeaderCellDef>Especialidad</th>
+    <td mat-cell *matCellDef="let element">{{ element.specialtyName }}</td>
+  </ng-container>
+  <ng-container matColumnDef="createdAt">
+    <th mat-header-cell *matHeaderCellDef>Fecha registro</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.createdAt | date : "dd/MM/YY HH:mm" }}
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
 }
 <!-- ss -->
 @if (fetchingData) {
@@ -34,8 +42,8 @@
 </div>
 }
 <!-- error -->
-@if (error$ | async; as errorObj) {
+@if (errorMessage) {
 <div>
-  <p>Error: {{ errorObj.error }}</p>
+  <p>Error: {{ errorMessage }}</p>
 </div>
 }
