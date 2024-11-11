@@ -34,9 +34,17 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
-}
-<!-- ss -->
-@if (fetchingData) {
+
+<mat-paginator
+  [length]="dataSourceAppointments.totalItems"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 25]"
+  [pageIndex]="dataSourceAppointments.currentPage"
+  (page)="handlePageEvent($event)"
+  aria-label="Select page"
+>
+</mat-paginator>
+} @if (fetchingData) {
 <div>
   <p>Fetching data...</p>
 </div>

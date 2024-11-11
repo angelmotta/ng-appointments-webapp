@@ -5,11 +5,12 @@ import { AppointmentService } from '../service/appointment.service';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { PaginatedAppointments } from '../models/appointment.model';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-appointments-list',
   standalone: true,
-  imports: [AsyncPipe, DatePipe, MatTableModule],
+  imports: [AsyncPipe, DatePipe, MatTableModule, MatPaginatorModule],
   templateUrl: './appointments-list.component.html',
   styleUrl: './appointments-list.component.css',
 })
@@ -25,13 +26,23 @@ export class AppointmentsListComponent implements OnInit {
     'dni',
     'specialtyName',
   ];
+  pageSize = 5; // Default page size
+
   constructor(private appointmentService: AppointmentService) {}
 
   ngOnInit(): void {
     console.log(`ngOnInit Component`);
+    this.fetchAppointments(0, this.pageSize);
+  }
+
+  fetchAppointments(pageIdx: number, pageSize: number) {
+    console.log(
+      `fetchAppointments called with pageIdx=${pageIdx} and pageSize=${pageSize}`
+    );
+    this.fetchingData = true;
 
     this.appointmentService
-      .getAppointment()
+      .getAppointment(pageIdx, pageSize)
       .pipe(
         finalize(() => {
           // Runs after success or error (no matter the outcome.)
@@ -50,5 +61,9 @@ export class AppointmentsListComponent implements OnInit {
         complete: () =>
           console.info(`GET /appointments completed successfully`),
       });
+  }
+
+  handlePageEvent(event: PageEvent) {
+    this.fetchAppointments(event.pageIndex, event.pageSize);
   }
 }

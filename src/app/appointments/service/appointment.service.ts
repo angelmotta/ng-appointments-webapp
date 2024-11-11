@@ -1,4 +1,8 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import {
@@ -10,50 +14,63 @@ import {
   providedIn: 'root',
 })
 export class AppointmentService {
-  readonly API_APPOINTMENTS = 'http://localhost:8080/api/appointments';
+  private readonly API_APPOINTMENTS = 'http://localhost:8080/api/appointments';
   constructor(private http: HttpClient) {}
 
-  getAppointment(): Observable<PaginatedAppointments> {
+  getAppointment(
+    pageIdx: number = 0,
+    pageSize: number = 5
+  ): Observable<PaginatedAppointments> {
     console.log(
       'getAppointment service method called - but HTTP request not yet made!'
     );
-    return this.http.get<PaginatedAppointments>(this.API_APPOINTMENTS).pipe(
-      tap({
-        next: () =>
-          console.log('HTTP Request executed - this means someone subscribed!'),
-      }),
-      catchError((error: HttpErrorResponse) => {
-        console.error('Failed to fetch appointments:', error);
-        console.log(`----`);
-        let errorMessage: string;
-        switch (error.status) {
-          case 401:
-            errorMessage = 'Unauthorized - please log in again';
-            break;
-          case 403:
-            errorMessage = 'You do not have permission to view appointments';
-            break;
-          case 500:
-            errorMessage = 'Appointment Service error - please try again later';
-            break;
-          case 0:
-            errorMessage = 'Appointment Service is not available';
-            break;
-          default:
-            errorMessage = 'Failed to fetch appointments';
-        }
 
-        // We can access the error response body if the API returns detailed errors
-        console.log(error.error);
-        // const errorResponse = error.error as ErrorResponse; // Define ErrorResponse interface
-        // if (errorResponse?.message) {
-        //   errorMessage = errorResponse.message;
-        // }
+    let params = new HttpParams()
+      .set('page', pageIdx.toString())
+      .set('size', pageSize.toString());
 
-        console.error(`Appointment fetch failed: ${errorMessage}`);
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+    return this.http
+      .get<PaginatedAppointments>(this.API_APPOINTMENTS, { params })
+      .pipe(
+        tap({
+          next: () =>
+            console.log(
+              'HTTP Request executed - this means someone subscribed!'
+            ),
+        }),
+        catchError((error: HttpErrorResponse) => {
+          console.error('Failed to fetch appointments:', error);
+          console.log(`----`);
+          let errorMessage: string;
+          switch (error.status) {
+            case 401:
+              errorMessage = 'Unauthorized - please log in again';
+              break;
+            case 403:
+              errorMessage = 'You do not have permission to view appointments';
+              break;
+            case 500:
+              errorMessage =
+                'Appointment Service error - please try again later';
+              break;
+            case 0:
+              errorMessage = 'Appointment Service is not available';
+              break;
+            default:
+              errorMessage = 'Failed to fetch appointments';
+          }
+
+          // We can access the error response body if the API returns detailed errors
+          console.log(error.error);
+          // const errorResponse = error.error as ErrorResponse; // Define ErrorResponse interface
+          // if (errorResponse?.message) {
+          //   errorMessage = errorResponse.message;
+          // }
+
+          console.error(`Appointment fetch failed: ${errorMessage}`);
+          return throwError(() => new Error(errorMessage));
+        })
+      );
   }
 
   createAppointment(payload: AppointmentRequest): Observable<void> {
