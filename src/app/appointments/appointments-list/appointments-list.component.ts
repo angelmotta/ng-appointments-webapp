@@ -1,8 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { catchError, delay, EMPTY, finalize, Observable, of, tap } from 'rxjs';
+import { finalize } from 'rxjs';
 import { AppointmentService } from '../service/appointment.service';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { PaginatedAppointments } from '../models/appointment.model';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -10,7 +9,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 @Component({
   selector: 'app-appointments-list',
   standalone: true,
-  imports: [AsyncPipe, DatePipe, MatTableModule, MatPaginatorModule],
+  imports: [DatePipe, MatTableModule, MatPaginatorModule],
   templateUrl: './appointments-list.component.html',
   styleUrl: './appointments-list.component.css',
 })
@@ -25,6 +24,7 @@ export class AppointmentsListComponent implements OnInit {
     'lastName',
     'dni',
     'specialtyName',
+    'appointmentDateTime',
   ];
   pageSize = 5; // Default page size
 
@@ -45,7 +45,7 @@ export class AppointmentsListComponent implements OnInit {
       .getAppointment(pageIdx, pageSize)
       .pipe(
         finalize(() => {
-          // Runs after success or error (no matter the outcome.)
+          // Runs after request is done (no matter the outcome) whether it's success or error
           this.fetchingData = false;
         })
       )
