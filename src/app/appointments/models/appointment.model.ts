@@ -21,4 +21,5 @@ export interface AppointmentRequest {
   lastName: string;
   dni: string;
   specialtyId: number;
+  appointmentDateTime: string;
 }

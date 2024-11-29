@@ -50,6 +50,28 @@
       >
     </div>
   </div>
+  <!-- Date Selection -->
+  <div>
+    <label for="appointmentDate">Fecha de la cita</label>
+    <input id="appointmentDate" type="date" formControlName="appointmentDate" />
+    <div class="form-error-message">
+      <small *ngIf="appointmentDate?.touched && appointmentDate?.errors">
+        Indicar fecha de cita
+      </small>
+      <small class="hidden-placeholder">&nbsp;</small>
+    </div>
+  </div>
+  <!-- Time Selection -->
+  <div>
+    <label for="appointmentTime">Hora de la cita</label>
+    <input id="appointmentTime" type="time" formControlName="appointmentTime" />
+    <div class="form-error-message">
+      <small *ngIf="appointmentTime?.touched && appointmentTime?.errors">
+        Indicar hora de cita
+      </small>
+      <small class="hidden-placeholder">&nbsp;</small>
+    </div>
+  </div>
   <button type="submit">Crear</button>
 </form>
 

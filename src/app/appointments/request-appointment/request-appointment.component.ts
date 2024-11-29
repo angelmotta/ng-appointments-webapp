@@ -32,6 +32,8 @@ export class RequestAppointmentComponent implements OnInit {
     lastName: FormControl<string>;
     dni: FormControl<string>;
     specialtyId: FormControl<number | null>;
+    appointmentDate: FormControl<string>; // 'YYYY-MM-DD'
+    appointmentTime: FormControl<string>; // 'HH:MM'
   }>;
   // Dialog
   showDialog = false;
@@ -64,6 +66,14 @@ export class RequestAppointmentComponent implements OnInit {
         ],
       }),
       specialtyId: this.fb.control<number | null>(null, {
+        validators: Validators.required,
+      }),
+      appointmentDate: this.fb.control<string>('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+      appointmentTime: this.fb.control<string>('', {
+        nonNullable: true,
         validators: Validators.required,
       }),
     });
@@ -110,6 +120,14 @@ export class RequestAppointmentComponent implements OnInit {
     return this.requestAppointmentForm.get('specialtyId');
   }
 
+  get appointmentDate() {
+    return this.requestAppointmentForm.get('appointmentDate');
+  }
+
+  get appointmentTime() {
+    return this.requestAppointmentForm.get('appointmentTime');
+  }
+
   handleSubmit() {
     console.log(this.requestAppointmentForm.value);
     if (!this.requestAppointmentForm.valid) {
@@ -124,8 +142,34 @@ export class RequestAppointmentComponent implements OnInit {
       return;
     }
 
-    const requestAppointment = this.requestAppointmentForm
-      .value as AppointmentRequest;
+    const requestAppointmentForm = this.requestAppointmentForm.value;
+    const datePart = requestAppointmentForm.appointmentDate!;
+    const timePart = requestAppointmentForm.appointmentTime!;
+    const dateTimeObj = new Date(`${datePart}T${timePart}`);
+    // Get user's local time zone offset in minutes
+    const offsetMinutes = dateTimeObj.getTimezoneOffset(); // Returns minutes difference from UTC
+    // Convert offset to ±HH:MM format
+    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+    const offsetMins = Math.abs(offsetMinutes % 60);
+    const offsetSign = offsetMinutes > 0 ? '-' : '+';
+    const formattedOffset = `${offsetSign}${String(offsetHours).padStart(
+      2,
+      '0'
+    )}:${String(offsetMins).padStart(2, '0')}`;
+
+    // Format the final date-time string with the offset
+    const appointmentDateTime = `${datePart}T${timePart}:00${formattedOffset}`;
+
+    const requestAppointment: AppointmentRequest = {
+      firstName: requestAppointmentForm.firstName!,
+      lastName: requestAppointmentForm.lastName!,
+      dni: requestAppointmentForm.dni!,
+      specialtyId: requestAppointmentForm.specialtyId!,
+      appointmentDateTime: appointmentDateTime,
+    };
+    console.log(`send request appointment`);
+    console.log(requestAppointment);
+
     // Send Request to API
     this.appointmentService.createAppointment(requestAppointment).subscribe({
       next: () => {
@@ -136,7 +180,7 @@ export class RequestAppointmentComponent implements OnInit {
         this.requestAppointmentForm.reset(); // clear form upon successful submission
       },
       error: (error: Error) => {
-        console.log(`Something went wrong: error creating Appointment`);
+        console.log(`GG Something went wrong: error creating Appointment`);
         this.dialogMessage = `Error al crear cita =( \n ${error.message}`;
         this.dialogType = 'error';
         this.showDialog = true;
